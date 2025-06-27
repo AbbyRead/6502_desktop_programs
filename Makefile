@@ -1,45 +1,47 @@
 CC = clang
 CFLAGS = -std=c99 -Wall -g -I$(LIB6502)
-LDFLAGS =
 BIN = bin
 OBJ = obj
 SRC = src
 LIB = lib
 LIB6502 = $(LIB)/fake6502
 
-EMULATOR = $(BIN)/emulator
-ROM = $(BIN)/hi.bin
-ROM_SRC = $(SRC)/hi.asm
 ASSEMBLER = xa
 
-OBJ_FILES = $(OBJ)/main.o $(OBJ)/fake6502.o
+ASM_SRCS := $(wildcard $(SRC)/*.asm)
+ASM_BINS := $(patsubst $(SRC)/%.asm,$(BIN)/%.bin,$(ASM_SRCS))
 
-TEST_BIN = $(BIN)/test_fake6502
-TEST_OBJ_FILES = $(OBJ)/tests.o $(OBJ)/fake6502_test.o
+C_SRCS := $(wildcard $(SRC)/*.c)
+C_BINS := $(patsubst $(SRC)/%.c,$(BIN)/%,$(C_SRCS))
+C_OBJS := $(patsubst $(SRC)/%.c,$(OBJ)/%.o,$(C_SRCS))
 
 .PHONY: all clean run test cppcheck format strip
 
-all: $(EMULATOR) $(ROM)
+all: $(C_BINS) $(ASM_BINS)
 
-# Object files
-$(OBJ)/main.o: $(SRC)/main.c
+# Assembly programs
+$(BIN)/%.bin: $(SRC)/%.asm
+	@mkdir -p $(BIN)
+	$(ASSEMBLER) $< -o $@
+
+# Object files for .c files
+$(OBJ)/%.o: $(SRC)/%.c
 	@mkdir -p $(OBJ)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+# fake6502 object file
 $(OBJ)/fake6502.o: $(LIB6502)/fake6502.c
 	@mkdir -p $(OBJ)
 	$(CC) $(CFLAGS) -DNMOS6502 -c $< -o $@
 
-$(EMULATOR): $(OBJ_FILES)
+# One binary per C file, linked with fake6502.o
+$(BIN)/%: $(OBJ)/%.o $(OBJ)/fake6502.o
 	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(ROM): $(ROM_SRC)
-	@mkdir -p $(BIN)
-	$(ASSEMBLER) $< -o $@
-
-run: $(EMULATOR) $(ROM)
-	$(EMULATOR) $(ROM)
+# Run first program and binary for demo
+run: $(BIN)/hi $(BIN)/hi.bin
+	$(BIN)/hi $(BIN)/hi.bin
 
 # Testing
 $(OBJ)/tests.o: $(LIB6502)/tests.c
@@ -50,12 +52,12 @@ $(OBJ)/fake6502_test.o: $(LIB6502)/fake6502.c
 	@mkdir -p $(OBJ)
 	$(CC) $(CFLAGS) -DDECIMALMODE -DNMOS6502 -c $< -o $@
 
-$(TEST_BIN): $(OBJ)/tests.o $(OBJ)/fake6502_test.o
+$(BIN)/test_fake6502: $(OBJ)/tests.o $(OBJ)/fake6502_test.o
 	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) $^ -o $@
 
-test: $(TEST_BIN)
-	valgrind -q ./$(TEST_BIN)
+test: $(BIN)/test_fake6502
+	valgrind -q ./$(BIN)/test_fake6502
 
 cppcheck:
 	cppcheck --enable=all --inconclusive --std=c99 $(SRC) $(LIB6502)
