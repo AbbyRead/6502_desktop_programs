@@ -1,7 +1,8 @@
-; Adds two bytes from $00 and $01, stores result in $02
-.org $8000
-    CLC
-    LDA $00
-    ADC $01
-    STA $02
-    RTS
+	*= $8000          ; origin (matches load address in C)
+
+	LDA $00           ; Load A
+	CLC               ; Clear carry
+	ADC $01           ; Add B
+	STA $02           ; Store result
+
+	JMP $FFFF         ; Signal end
