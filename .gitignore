@@ -1,0 +1,51 @@
+# Build outputs
+/bin/
+/build/
+/obj/
+/out/
+/output/
+
+# Binaries and executables
+*.exe
+*.out
+*.app
+*.so
+*.dylib
+
+# Object files
+*.o
+*.obj
+
+# Coverage files
+*.gcda
+*.gcno
+*.gcov
+
+# Compiled Python files (if any)
+__pycache__/
+*.py[cod]
+
+# Editor and IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.bak
+
+# Mac OS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Assembler output (if you want to ignore generated .bin files)
+# Uncomment if you want these tracked or ignored
+# *.bin
+
+# Ignore generated test coverage reports directory (if any)
+build/coverage/

@@ -1,0 +1,13 @@
+BasedOnStyle: llvm
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+AllowShortIfStatementsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Inline
+ColumnLimit: 100
+BreakBeforeBraces: Allman
+SortIncludes: false
+IncludeBlocks: Preserve
+SpacesInParentheses: false
+SpaceAfterCStyleCast: true
+PointerAlignment: Left
