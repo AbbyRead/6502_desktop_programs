@@ -3,33 +3,40 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern void reset6502(void);
-extern void step6502(void);
-
 uint8_t memory[65536];
 
-uint8_t read6502(uint16_t addr) {
+uint8_t fake6502_mem_read(fake6502_context *c, uint16_t addr) {
     return memory[addr];
 }
 
-void write6502(uint16_t addr, uint8_t val) {
+void fake6502_mem_write(fake6502_context *c, uint16_t addr, uint8_t val) {
     memory[addr] = val;
 }
 
 int main() {
     FILE *f = fopen("add.bin", "rb");
+    if (!f) {
+        perror("Failed to open add.bin");
+        return 1;
+    }
+
     fread(&memory[0x8000], 1, 0x100, f);
     fclose(f);
 
     memory[0x00] = 5;  // A
     memory[0x01] = 7;  // B
 
-    pc = 0x8000;       // entry point
+    // Initialize emulator
+	fake6502_context cpu;
+    memset(&cpu, 0, sizeof(cpu));
+    cpu.cpu.pc = 0x8000;
+
+    // Run
     for (int i = 0; i < 20; i++) {
-        step6502();
-        if (pc == 0xFFFF) break; // stop condition (e.g., trap)
+        fake6502_step(&cpu);
+        if (cpu.cpu.pc == 0xFFFF) break;
     }
 
-    printf("Result: %d\n", memory[0x02]); // should be 12
+    printf("Result: %d\n", memory[0x02]); // Should be 12
     return 0;
 }
