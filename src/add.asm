@@ -1,4 +1,4 @@
-	*= $8000          ; origin (matches load address in C)
+	.org $8000          ; origin (matches load address in C)
 
 	LDA $00           ; Load A
 	CLC               ; Clear carry

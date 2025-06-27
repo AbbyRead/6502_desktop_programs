@@ -6,7 +6,7 @@ SRC = src
 LIB = lib
 LIB6502 = $(LIB)/fake6502
 
-ASSEMBLER = xa
+ASSEMBLER = asm6f
 
 ASM_SRCS := $(wildcard $(SRC)/*.asm)
 ASM_BINS := $(patsubst $(SRC)/%.asm,$(BIN)/%.bin,$(ASM_SRCS))
@@ -22,7 +22,7 @@ all: $(C_BINS) $(ASM_BINS)
 # Assembly programs
 $(BIN)/%.bin: $(SRC)/%.asm
 	@mkdir -p $(BIN)
-	$(ASSEMBLER) $< -o $@
+	$(ASSEMBLER) $< $@
 
 # Object files for .c files
 $(OBJ)/%.o: $(SRC)/%.c
