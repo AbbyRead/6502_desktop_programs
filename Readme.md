@@ -18,6 +18,7 @@ A collection of C programs that embed a 6502 CPU emulator to run small assembly 
 ```bash
 git clone --recurse-submodules git@github.com:AbbyRead/6502_desktop_programs.git
 cd 6502_desktop_programs
+```
 
 # 6502 Desktop Programs
 
@@ -76,10 +77,3 @@ git submodule update --remote
 * Your code: [0BSD](./LICENSE) (if you choose to license it)
 * `fake6502`: [See its LICENSE file](third_party/fake6502/LICENSE)
 
----
-
-## ✨ TODO / Ideas
-
-* [ ] Add more 6502 examples
-* [ ] Display memory state after execution
-* [ ] Add input/output mapping
